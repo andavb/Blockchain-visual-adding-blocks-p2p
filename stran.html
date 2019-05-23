@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Blockchain</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $( document ).ready(function() {
+      posodobiBloke();
+    });
+
+    function posodobiBloke(){
+      var x = "";
+
+      $.ajax({
+              url: '/pridobi',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(),
+              dataType: 'json',
+              success: function (result) {
+                for(i in result.bloki){
+                  x += '<div class="blok">';
+                  x += '<h4>Blok</h4>';
+                  x += '<p>index: '+ result.bloki[i].index + '</p>';
+                  x += '<p>data: '+ result.bloki[i].data + '</p>';
+                  x += '<p>hash: '+ result.bloki[i].hash + '</p>';
+                  x += '<p>previousHash: '+ result.bloki[i].previousHash + '</p>';
+                  x += '<p>nonce: '+ result.bloki[i].nonce + '</p>';
+                  x += '|</div>';
+                  document.getElementById("bloki").innerHTML = x;
+
+                  console.log(result.bloki[i]);
+                }
+              },
+              error: function(result){console.log(result);}
+      } );
+    }
+
+      function poslji(){
+        console.log('/test?stevilo='+document.getElementById("nodePort").value);
+        var port = { 'data' : document.getElementById("nodePort").value};
+
+        $.ajax({
+                url: '/test',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify( port ),
+                dataType: 'json',
+                success: function (result) {console.log(result); posodobiBloke();},
+                error: function(result){console.log(result);}
+        } );
+      }
+
+      function dodajNovBlok(){
+        var x = "" ;
+        console.log('/test?blok='+document.getElementById("vsebina").value);
+        var port = { 'data' : document.getElementById("vsebina").value};
+
+        $.ajax({
+                url: '/dodaj',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify( port ),
+                dataType: 'json',
+                success: function (result) {
+                  for(i in result.bloki){
+                    x += '<div class="blok">';
+                    x += '<h4>Blok</h4>';
+                    x += '<p>index: '+ result.bloki[i].index + '</p>';
+                    x += '<p>data: '+ result.bloki[i].data + '</p>';
+                    x += '<p>hash: '+ result.bloki[i].hash + '</p>';
+                    x += '<p>previousHash: '+ result.bloki[i].previousHash + '</p>';
+                    x += '<p>nonce: '+ result.bloki[i].nonce + '</p>';
+                    x += '|</div>';
+                    document.getElementById("bloki").innerHTML = x;
+
+                    console.log(result.bloki[i]);
+                  }
+                },
+                error: function(result){console.log(result);}
+        } );
+
+      }
+    </script>
+    <style media="screen">
+      .povezava{
+        width: 240px;
+        height: 140px;
+        border: 1px solid black;
+        padding: 10px;
+      }
+      .dodajBlok{
+        width: 240px;
+        height: 330px;
+        padding: 10px;
+        position: fixed;
+      }
+      .blok{
+        width: 650px;
+        height: 210px;
+        border: 1px solid green;
+        padding: 10px;
+        margin: 40px;
+        margin-left: 400px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="dodajBlok">
+      <div class="povezava">
+        <p>Vzpostavljanje povezave z vozliščem:</p>
+         PORT: <input type="text" name="texts" id="nodePort" value="">
+         <br>
+         <br>
+         <button type="button" name="button" id="gumb" onclick="poslji()">Vzpostavi povezavo</button>
+      </div>
+      <br>
+      <br>
+      <div class="povezava">
+        <p>Kreiraj blok:</p>
+         vsebina: <input type="text" name="vseb" id="vsebina" value="">
+         <br>
+         <br>
+         <button type="button" name="button" id="novB" onclick="dodajNovBlok()">Dodaj blok</button>
+      </div>
+    </div>
+    <p class="blokiOk" id="bloki">
+
+    </p>
+  </body>
+</html>
